@@ -37,9 +37,19 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaEnterpriseProvider("6LcMNKIpAAAAAIkOEsxL37V5GGYFvBJhlrFS4yfw"),
-  isTokenAutoRefreshEnabled: true, 
-
+  provider: new ReCaptchaEnterpriseProvider(
+    "6LcMNKIpAAAAAIkOEsxL37V5GGYFvBJhlrFS4yfw"
+  ),
+  isTokenAutoRefreshEnabled: true,
 });
 
-export { auth, app, storage, functions, appCheck, firestore, analytics, performance};
+export {
+  auth,
+  app,
+  storage,
+  functions,
+  appCheck,
+  firestore,
+  analytics,
+  performance,
+};
