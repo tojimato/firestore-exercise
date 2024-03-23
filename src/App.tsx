@@ -1,12 +1,21 @@
-import React, { useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { collection, addDoc } from "firebase/firestore";
-import { firestore } from "./lib/firebase/firebase.config";
+import { analytics, auth, firestore } from "./lib/firebase/config";
+import { signInAnonymously } from "firebase/auth";
+import { logEvent } from "firebase/analytics";
 
 function App() {
   const addData = async () => {
     try {
+      const anonUser = await signInAnonymously(auth);
+
+      if (anonUser.user) {
+        logEvent(analytics, "web-login", {
+          method: "anonymous",
+        });
+      }
+
       const docRef = await addDoc(collection(firestore, "users"), {
         first: "Ada",
         last: "Lovelace",
@@ -18,14 +27,13 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    addData();
-  }, []);
   return (
     <div className='App'>
       <header className='App-header'>
         <img src={logo} className='App-logo' alt='logo' />
         <p>{process.env.REACT_APP_FIREBASE_APP_ID}</p>
+        <button onClick={addData}>Add User</button>
+        
       </header>
     </div>
   );
