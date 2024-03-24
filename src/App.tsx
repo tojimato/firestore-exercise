@@ -16,14 +16,22 @@ function App() {
         });
       }
 
+      throw new Error("Error occured when insert user.");
+
       const docRef = await addDoc(collection(firestore, "users"), {
         first: "Ada",
         last: "Lovelace",
         born: 1815,
       });
-      console.log("Document written with ID: ", docRef.id);
+      alert(`Document written with ID: ${docRef.id}`);
     } catch (e) {
       console.error("Error adding document: ", e);
+      if (e instanceof Error) {
+        logEvent(analytics, "exception", {
+          description: e.message,
+          fatal: true,
+        });
+      }
     }
   };
 
@@ -33,7 +41,6 @@ function App() {
         <img src={logo} className='App-logo' alt='logo2' />
         <p>{process.env.REACT_APP_FIREBASE_APP_ID}</p>
         <button onClick={addData}>Add User</button>
-        
       </header>
     </div>
   );
