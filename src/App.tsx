@@ -40,7 +40,7 @@ function App() {
       <header className='App-header'>
         <img src={logo} className='App-logo' alt='logo2' />
         <p>{process.env.REACT_APP_FIREBASE_APP_ID}</p>
-        <button onClick={addData}>Add User</button>
+        <button onClick={addData}></button>
       </header>
     </div>
   );
