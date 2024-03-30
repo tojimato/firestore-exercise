@@ -7,4 +7,6 @@ export const FirestoreCollections = {
     Apps: 'apps',
     Notifications: 'notifications',
     UserDevices: 'userDevices',    
+    UserAddresses: 'users/addresses',
+    RegistrationSteps: 'registrationSteps',
   };

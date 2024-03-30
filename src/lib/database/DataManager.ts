@@ -30,7 +30,12 @@ function createFirestoreDataManager(firestore: Firestore): DataManager {
     list: async function<T>(collectionPath: string, queries: any[] = []): Promise<T[]> {
       // Firestore listeleme işlemi burada gerçekleşecek
       // Örneğin: const querySnapshot = await firestore.collection(collectionPath).where(...queries).get();
-      //           return querySnapshot.docs.map(doc => doc.data()) as T[];
+      //           return querySnapshot.docs.map(doc => doc.data()) as T[];      
+
+      // if (typeof {} !== typeof T || !('RecordDeleted' in new T())) {
+      //   throw new Error('T tipi bir obje olmalı ve RecordDeleted alanını içermelidir.');
+      // }
+
       return [] as T[];
     },
 
