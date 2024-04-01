@@ -79,6 +79,7 @@ function createMongoDataManager(firestore: Firestore): DataManager {
 
       //analytic
       //crashylics
+      //Performance monitoring
 
       return [] as T[];
     },
