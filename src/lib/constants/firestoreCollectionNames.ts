@@ -9,4 +9,5 @@ export const FirestoreCollections = {
     UserDevices: 'userDevices',    
     UserAddresses: 'users/addresses',
     RegistrationSteps: 'registrationSteps',
+    userAudit:"userAudit",
   };
