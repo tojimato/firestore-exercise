@@ -1,11 +1,23 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { collection, addDoc } from "firebase/firestore";
 import { analytics, auth, firestore } from "./lib/firebase/config";
 import { signInAnonymously } from "firebase/auth";
 import { logEvent } from "firebase/analytics";
+import createFirestoreDataManager from "./lib/utils/firestore/createFirestoreDataManager";
+import MyDataReference from "./lib/database/DefaultDataReference";
+
+type User = {
+  first: string;
+  last: string;
+  born: number;
+  additional: {
+    email: string;
+    phone: string;
+  };
+} & MyDataReference;
+
 
 function App() {
+  const db = createFirestoreDataManager(firestore);
   const addData = async () => {
     try {
       const anonUser = await signInAnonymously(auth);
@@ -16,14 +28,18 @@ function App() {
         });
       }
 
-      throw new Error("Error occured when insert user.");
-
-      const docRef = await addDoc(collection(firestore, "users"), {
+      const addedDoc = await db.add<User>("users",{
         first: "Ada",
         last: "Lovelace",
         born: 1815,
+
+        additional:{
+          email: "tojimato@gmail.com",
+          phone: "1234567890"
+        }
       });
-      alert(`Document written with ID: ${docRef.id}`);
+
+      alert(`Document written with ID: ${addedDoc.first}`);
     } catch (e) {
       console.error("Error adding document: ", e);
       if (e instanceof Error) {
@@ -38,9 +54,13 @@ function App() {
   return (
     <div className='App'>
       <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo2' />
-        <p>{process.env.REACT_APP_FIREBASE_APP_ID}</p>
-        <button onClick={addData}></button>
+        <button onClick={addData}>Add Data To Root</button>
+        <button onClick={addData}>Set Data To Root </button>
+        <button onClick={addData}>List Button - Pagination</button>
+        <button onClick={addData}>Get Button</button>
+        <button onClick={addData}>Remove Button</button>
+        <button onClick={addData}>Update Button</button>
+        <button onClick={addData}>Transaction Button</button>
       </header>
     </div>
   );

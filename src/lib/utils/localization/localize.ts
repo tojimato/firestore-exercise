@@ -1,5 +1,5 @@
-import { FirestoreCollections } from '../constants/firestoreCollectionNames';
-import { firestore } from '../firebase/config';
+import { FirestoreCollections } from '../../constants/firestoreCollectionNames';
+import { firestore } from '../../firebase/config';
 import { getDocs, collection } from "firebase/firestore";
 
 
