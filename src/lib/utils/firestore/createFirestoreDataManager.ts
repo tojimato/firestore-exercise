@@ -38,13 +38,14 @@ function createFirestoreDataManager(firestore: Firestore): DataManager {
       return undefined;
     },
 
-    add: async function <T extends DefaultDataReference>(collectionPath: string, data: T): Promise<T> {
+    add: async function <T extends DefaultDataReference>(
+      collectionPath: string,
+      data: T,
+      collectionSegments?: string[]
+    ): Promise<T> {
       try {
-
         data.createdAt = new Date().getTime();
         data.deleted = false;
-
-        console.log(data);
 
         const docRef = await addDoc(
           collection(firestore, collectionPath),
