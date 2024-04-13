@@ -72,7 +72,9 @@ function createFirestoreDataManager(
         ),
         ...constraints
       );
+
       const querySnapshot = await getDocs(q);
+
       const items: T[] = querySnapshot.docs.map((doc) => {
         return { id: doc.id, ...doc.data() } as T & { id: string };
       });
@@ -80,6 +82,7 @@ function createFirestoreDataManager(
       const countDoc = await getDoc(
         doc(firestore, "aggregates", collectionPath.rootPath)
       );
+
       const totalCount = countDoc.exists() ? countDoc.data().count : 0;
       const totalPages = Math.ceil(totalCount / pageRequest.pageSize);
 
@@ -91,7 +94,6 @@ function createFirestoreDataManager(
         totalPages,
       };
     },
-
     get: async function <T>(
       collectionPath: CollectionPath,
       documentPath: DocumentPath
@@ -111,19 +113,19 @@ function createFirestoreDataManager(
 
         const docSnapshot = await getDoc(docRef);
 
-        if (docSnapshot.exists()) {
-          const data = docSnapshot.data() as DocumentData;
-
-          if (!data.deleted) {
-            return { id: docSnapshot.id, ...docSnapshot.data() } as T & {
-              id: string;
-            };
-          } else {
-            console.log("Document is marked as deleted.");
-          }
-        } else {
+        if (!docSnapshot.exists()) {
           console.log("Document does not exist.");
+          return undefined;
         }
+
+        const data = docSnapshot.data() as DocumentData;
+
+        if (data.deleted) {
+          console.log("Document is marked as deleted.");
+          return undefined;
+        }
+
+        return { id: docSnapshot.id, ...data } as T & { id: string };
       } catch (e) {
         console.error("Error getting document: ", e);
         if (e instanceof Error) {
@@ -134,7 +136,6 @@ function createFirestoreDataManager(
         }
         throw e;
       }
-      return undefined;
     },
     add: async function <T extends DefaultDataReference>(
       collectionPath: CollectionPath,
@@ -169,11 +170,9 @@ function createFirestoreDataManager(
             fatal: true,
           });
         }
-
         throw e;
       }
     },
-
     set: async function <T extends DefaultDataReference>(
       documentPath: CollectionPath,
       data: T,
@@ -207,11 +206,9 @@ function createFirestoreDataManager(
             fatal: true,
           });
         }
-
         throw e;
       }
     },
-
     update: async function <T extends DefaultDataReference>(
       documentPath: DocumentPath,
       data: Partial<T>,
@@ -245,7 +242,6 @@ function createFirestoreDataManager(
         throw e;
       }
     },
-
     remove: async function (
       documentPath: DocumentPath,
       transaction?: Transaction
@@ -263,7 +259,6 @@ function createFirestoreDataManager(
         throw e;
       }
     },
-
     transaction: async function <T>(
       operation: TransactionOperation<T>
     ): Promise<T> {
