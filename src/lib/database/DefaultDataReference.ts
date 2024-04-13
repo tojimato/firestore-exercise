@@ -1,9 +1,10 @@
 interface DefaultDataReference {
     id?: string;
     createdAt?: number;
+    createdBy?: string;
     updatedAt?: number;
+    updatedBy?: string;
     deleted?: boolean;
-    // include other properties you need
 }
 
 export default DefaultDataReference;

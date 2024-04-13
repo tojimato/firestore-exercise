@@ -8,6 +8,6 @@ export const FirestoreCollections = {
     Notifications: 'notifications',
     UserDevices: 'userDevices',    
     UserAddresses: 'users/addresses',
-    RegistrationSteps: 'registrationSteps',
-    userAudit:"userAudit",
+    UserAudit:"userAudit",
+    Aggregates: 'aggregates',
   };
