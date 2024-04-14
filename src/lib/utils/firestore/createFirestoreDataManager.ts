@@ -140,14 +140,21 @@ function createFirestoreDataManager(
     add: async function <T extends DefaultDataReference>(
       collectionPath: CollectionPath,
       data: T,
-      transaction?: Transaction
+      transaction?: Transaction,
+      includeDefaultFields: boolean = true
     ): Promise<T> {
       try {
         const dataWithInfos = data as WithFieldValue<DocumentData>;
 
-        dataWithInfos.createdAt = new Date().getTime();
-        dataWithInfos.createdBy = "system";
-        dataWithInfos.deleted = false;
+        if (includeDefaultFields) {
+          dataWithInfos.createdAt = new Date().getTime();
+          dataWithInfos.createdBy = "system";
+        }
+
+        if(!("deleted" in data)){
+          dataWithInfos.deleted = false;
+        }
+
         const collectionRef = collection(
           firestore,
           collectionPath.rootPath,
@@ -176,16 +183,22 @@ function createFirestoreDataManager(
     set: async function <T extends DefaultDataReference>(
       documentPath: CollectionPath,
       data: T,
-      transaction?: Transaction
+      transaction?: Transaction,
+      includeDefaultFields: boolean = true
     ): Promise<void> {
       try {
         const dataWithInfos = data as WithFieldValue<DocumentData>;
 
-        dataWithInfos.createdAt = new Date().getTime();
-        dataWithInfos.createdBy = "system";
-        dataWithInfos.updatedAt = new Date().getTime();
-        dataWithInfos.updatedBy = "system";
-        dataWithInfos.deleted = false;
+        if (includeDefaultFields) {
+          dataWithInfos.createdAt = new Date().getTime();
+          dataWithInfos.createdBy = "system";
+          dataWithInfos.updatedAt = new Date().getTime();
+          dataWithInfos.updatedBy = "system";
+        }
+
+        if(!("deleted" in data)){
+          dataWithInfos.deleted = false;
+        }
 
         const ref = doc(
           firestore,
@@ -212,14 +225,17 @@ function createFirestoreDataManager(
     update: async function <T extends DefaultDataReference>(
       documentPath: DocumentPath,
       data: Partial<T>,
-      transaction?: Transaction
+      transaction?: Transaction,
+      includeDefaultFields: boolean = true
     ): Promise<void> {
       try {
         const dataWithInfos = data as WithFieldValue<DocumentData>;
 
-        dataWithInfos.updatedAt = new Date().getTime();
-        dataWithInfos.updatedBy = "system";
-
+        if (includeDefaultFields) {
+          dataWithInfos.updatedAt = new Date().getTime();
+          dataWithInfos.updatedBy = "system";
+        }
+        
         const ref = doc(
           firestore,
           documentPath.rootPath,

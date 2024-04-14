@@ -19,8 +19,7 @@ function App() {
 
   const db = createFirestoreDataManager(firestore);
 
-  // useLocalize hook'unu kullanarak dil kaynaklarını çekelim.
-  const { data: resources, error, isFetching } = useLocalize("en");
+  const { resources, error, isFetching } = useLocalize("tr");
 
   if (isFetching) return <p>Loading...</p>;
   if (error) return <p>An error has occurred: {error.message}</p>;
@@ -238,7 +237,7 @@ function App() {
   return (
     <div className='App'>
       <header className='App-header'>
-        <button onClick={addData}>{resources?.TXT_ADD_DATA_TO_ROOT2}</button>
+        <button onClick={addData}>{resources.TXT_ADD_DATA_TO_ROOT}</button>
         <button onClick={addDataToSubCollection}>
           Add Data To Sub Collection
         </button>

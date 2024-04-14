@@ -14,11 +14,11 @@ export async function fetchLanguageData(
   try {
     const ref: CollectionPath = {
       rootPath: FirestoreCollections.Languages,
-      segments: [language, "resources"],
+      segments: [language, FirestoreCollections.Resources],
     };
 
     const pageRequest = {
-      pageSize: -1,
+      pageSize: 0,
     };
 
     const languageResources = await db.list<Resource>(ref, pageRequest);
@@ -27,6 +27,7 @@ export async function fetchLanguageData(
       localizedTexts[doc.id] = doc.value as string;
     });
 
+    console.log("Fetched language data: ", localizedTexts)
     return localizedTexts;
   } catch (e) {
     if (e instanceof Error) {

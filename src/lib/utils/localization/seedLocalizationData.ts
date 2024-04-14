@@ -7,39 +7,40 @@ import createFirestoreDataManager from "../firestore/createFirestoreDataManager"
 const dataManager = createFirestoreDataManager(firestore);
 
 export async function seedLocalizationData() {
-  const currentTime = Date.now();
-
   for (const [language, data] of Object.entries(languageData)) {
-    // Kontrol etmek için list metodu kullanılıyor
     const collectionPath = {
       rootPath: FirestoreCollections.Languages,
       segments: [language],
     };
     const pageRequest = {
-      pageSize: 1, // Sadece doküman varlığını kontrol etmek için 1 yeterli
+      pageSize: 0, 
     };
 
-    const response = await dataManager.list(
+    const response = await dataManager.list<Language>(
       { rootPath: collectionPath.rootPath },
       pageRequest
     );
-    const exists = response.totalCount > 0;
+
+    const exists = response.items.some(x=> x.code === language);
 
     if (!exists) {
       console.log(`Seeding data for language: ${language}`);
-      // Dil verilerini eklemek için set metodu kullanılıyor
-      await dataManager.set<Language>(collectionPath, {
-        ...data
-      });
+      await dataManager.set<Language>(
+        collectionPath,
+        {
+          ...data,
+        },
+      );
 
-      // Her bir dil için kaynakları ekleyin
       for (const [key, value] of Object.entries(data.resources)) {
         await dataManager.set<Resource>(
           {
             rootPath: FirestoreCollections.Languages,
             segments: [language, FirestoreCollections.Resources, key],
           },
-          { value }
+          { value },
+          undefined,
+          false
         );
       }
     }
