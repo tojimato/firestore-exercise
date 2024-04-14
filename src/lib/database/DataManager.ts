@@ -9,7 +9,9 @@ interface DataManager {
    * Firestore verilerini belirli bir yol altında listeler
    * @param collectionPath - Koleksiyonun yolunu ifade eder
    * @param pageRequest - Pagination,filtreler ve sıralama bilgilerini içerir
-   * 
+   * @remarks
+   * Eğer startAfter ve startAt aynı anda kullanılırsa startAfter geçerli olacaktır.
+   * Eğer pagesize 0 veya daha küçük bir değer girilirse tüm verileri çeker.
    * @example
    * const collectionPath: CollectionPath = {
         rootPath: "users",
@@ -141,7 +143,6 @@ interface DataManager {
       await db.remove(documentPath);
    * */
   remove(documentPath: DocumentPath): Promise<void>;
-
 }
 
 export default DataManager;

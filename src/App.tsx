@@ -11,12 +11,19 @@ import { generateFakeUser } from "./lib/utils/faker/generateFakeUser";
 import { generateFakeMessage } from "./lib/utils/faker/generateFakeMessage";
 import PageRequest from "./lib/database/types/PageRequest";
 import { Message, User } from "./lib/models";
+import { useLocalize } from "./lib/hooks/useLocalize";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [user, setUser] = useState<User>();
 
   const db = createFirestoreDataManager(firestore);
+
+  // useLocalize hook'unu kullanarak dil kaynaklarını çekelim.
+  const { data: resources, error, isFetching } = useLocalize("en");
+
+  if (isFetching) return <p>Loading...</p>;
+  if (error) return <p>An error has occurred: {error.message}</p>;
 
   const anonUser = signInAnonymously(auth).then((response) => {
     return response;
@@ -47,6 +54,7 @@ function App() {
           description: e.message,
           fatal: true,
         });
+
       }
     }
     t.stop();
@@ -164,17 +172,17 @@ function App() {
       };
 
       const pageRequest: PageRequest = {
-        pageSize: 8,
+        pageSize: 5,
         //startAfter: 1713026432581,
         sortBy: "createdAt",
         sortOrder: "desc",
-        filters: [
-          {
-            field: "first",
-            operator: "in",
-            value: ["Glenda", "Allie"],
-          },
-        ],
+        // filters: [
+        //   {
+        //     field: "first",
+        //     operator: "in",
+        //     value: ["Joe", "Cornell"],
+        //   },
+        // ],
       };
 
       const data = await db.list<User>(collectionPath, pageRequest);
@@ -219,7 +227,7 @@ function App() {
       rootPath: "users",
     };
     const documentPath: DocumentPath = {
-      rootPath: "JTOQBYDDrTIyUQ4QuM4v",
+      rootPath: "UK7tiIS6YCgMgNXMDTyd",
     };
 
     const user = await db.get<User>(collectionPath, documentPath);
@@ -230,7 +238,7 @@ function App() {
   return (
     <div className='App'>
       <header className='App-header'>
-        <button onClick={addData}>Add Data To Root</button>
+        <button onClick={addData}>{resources?.TXT_ADD_DATA_TO_ROOT2}</button>
         <button onClick={addDataToSubCollection}>
           Add Data To Sub Collection
         </button>

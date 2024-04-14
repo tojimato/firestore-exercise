@@ -55,7 +55,7 @@ function createFirestoreDataManager(
         });
       }
 
-      if (pageRequest.pageSize) {
+      if (pageRequest.pageSize && pageRequest.pageSize > 0) {
         constraints.push(limit(pageRequest.pageSize));
         if (pageRequest.startAfter) {
           constraints.push(startAfter(pageRequest.startAfter));
