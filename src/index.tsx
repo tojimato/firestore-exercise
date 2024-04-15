@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import ReactQueryProvider from "./lib/providers/ReactQueryProvider";
+import { AppProvider } from "./lib/providers/AppProvider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -11,7 +12,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ReactQueryProvider>
-      <App />
+      <AppProvider>
+        <App />
+      </AppProvider>
     </ReactQueryProvider>
   </React.StrictMode>
 );

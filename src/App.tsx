@@ -13,14 +13,16 @@ import PageRequest from "./lib/database/types/PageRequest";
 import { Message, User } from "./lib/models";
 import { useLocalize } from "./lib/hooks/useLocalize";
 import { seedLocalizationData } from "./lib/utils/localization/seedLocalizationData";
+import { useAppContext } from "./lib/providers/AppProvider";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [user, setUser] = useState<User>();
+  const [{ language: selectedLanguage, setLanguage }] = useAppContext();
 
   const db = createFirestoreDataManager(firestore);
 
-  const { resources, error, isFetching } = useLocalize("tr");
+  const { resources, error, isFetching } = useLocalize(selectedLanguage);
 
   if (isFetching) return <p>Loading...</p>;
   if (error) return <p>An error has occurred: {error.message}</p>;
@@ -234,7 +236,10 @@ function App() {
     setUser(user);
   };
 
-  const changeLanguage = async () => {};
+  const changeLanguage = async () => {
+    setLanguage(selectedLanguage == "en" ? "tr" : "en");
+    console.log(selectedLanguage);
+  };
 
   const changeTheme = async () => {
     await seedLocalizationData();
