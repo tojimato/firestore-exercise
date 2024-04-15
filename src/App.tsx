@@ -12,6 +12,7 @@ import { generateFakeMessage } from "./lib/utils/faker/generateFakeMessage";
 import PageRequest from "./lib/database/types/PageRequest";
 import { Message, User } from "./lib/models";
 import { useLocalize } from "./lib/hooks/useLocalize";
+import { seedLocalizationData } from "./lib/utils/localization/seedLocalizationData";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
@@ -53,7 +54,6 @@ function App() {
           description: e.message,
           fatal: true,
         });
-
       }
     }
     t.stop();
@@ -234,25 +234,42 @@ function App() {
     setUser(user);
   };
 
+  const changeLanguage = async () => {};
+
+  const changeTheme = async () => {
+    await seedLocalizationData();
+  };
+
+  const seedLanguage = async () => {
+    await seedLocalizationData();
+  };
+
   return (
     <div className='App'>
       <header className='App-header'>
+        <button onClick={seedLanguage}>
+          {resources.TXT_SEED_LANGUAGE_BUTTON}
+        </button>
+        <button onClick={changeTheme}>{resources.TXT_CHANGE_THEME}</button>
+        <button onClick={changeLanguage}>
+          {resources.TXT_CHANGE_LANGUAGE}
+        </button>
         <button onClick={addData}>{resources.TXT_ADD_DATA_TO_ROOT}</button>
         <button onClick={addDataToSubCollection}>
-          Add Data To Sub Collection
+          {resources.TXT_ADD_DATA_TO_SUBCOLLECTION}
         </button>
-        <button onClick={setData}>Set Data</button>
-        <button onClick={removeData}>Remove</button>
-        <button onClick={updateData}>Update</button>
+        <button onClick={setData}>{resources.TXT_SET_DATA}</button>
+        <button onClick={removeData}>{resources.TXT_REMOVE}</button>
+        <button onClick={updateData}>{resources.TXT_UPDATE_DATA}</button>
         <hr />
-        <button onClick={getData}>Get Data</button>
-        <button onClick={listUsers}>List - Pagination</button>
+        <button onClick={getData}>{resources.TXT_GET_DATA}</button>
+        <button onClick={listUsers}>{resources.TXT_LIST_BUTTON}</button>
         <hr />
-        <button onClick={doTransaction}>Transaction</button>
+        <button onClick={doTransaction}>{resources.TXT_DO_TRANSACTION}</button>
       </header>
       <main className='user-list'>
-        <h1>Users </h1>
-        {users.length === 0 && <h1>There is no user, sorry.</h1>}
+        <h1>{resources.TXT_USER_HEADER} </h1>
+        {users.length === 0 && <h1>{resources.TXT_USER_EMPTY_LIST_INFO}</h1>}
         <ul>
           {users.map((user) => (
             <li key={user.first}>
@@ -261,8 +278,8 @@ function App() {
           ))}
         </ul>
         <hr />
-        <h3>Get Individual User</h3>
-        <span>press get data button to fetch user.</span>
+        <h3>{resources.TXT_INDIVIDUAL_USER}</h3>
+        <span>{resources.TXT_INDIVIDUAL_USER_DESC}</span>
         <div>
           <h2>{user?.first}</h2>
           <h2>{user?.last}</h2>

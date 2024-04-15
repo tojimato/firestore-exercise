@@ -6,6 +6,7 @@ import {
   WithFieldValue,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -151,7 +152,7 @@ function createFirestoreDataManager(
           dataWithInfos.createdBy = "system";
         }
 
-        if(!("deleted" in data)){
+        if (!("deleted" in data)) {
           dataWithInfos.deleted = false;
         }
 
@@ -196,7 +197,7 @@ function createFirestoreDataManager(
           dataWithInfos.updatedBy = "system";
         }
 
-        if(!("deleted" in data)){
+        if (!("deleted" in data)) {
           dataWithInfos.deleted = false;
         }
 
@@ -235,7 +236,7 @@ function createFirestoreDataManager(
           dataWithInfos.updatedAt = new Date().getTime();
           dataWithInfos.updatedBy = "system";
         }
-        
+
         const ref = doc(
           firestore,
           documentPath.rootPath,
@@ -260,10 +261,26 @@ function createFirestoreDataManager(
     },
     remove: async function (
       documentPath: DocumentPath,
-      transaction?: Transaction
+      transaction?: Transaction,
+      hardDelete: boolean = false
     ): Promise<void> {
       try {
-        await this.update(documentPath, { deleted: true }, transaction);
+        const ref = doc(
+          firestore,
+          documentPath.rootPath,
+          ...(documentPath.segments ?? [])
+        );
+
+        console.log(ref);
+        if (hardDelete) {
+          if (transaction) {
+            transaction.delete(ref);
+          } else {
+            await deleteDoc(ref);
+          }
+        } else {
+          await this.update(documentPath, { deleted: true }, transaction);
+        }
       } catch (e) {
         console.error("Error removing document: ", e);
         if (e instanceof Error) {

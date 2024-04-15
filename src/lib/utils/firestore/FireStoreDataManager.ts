@@ -93,7 +93,8 @@ interface FireStoreDataManager extends DataManager {
    * Firestore verilerini belirli bir yol altında kaldırır. Burada kaldırma işlemi mantıksal silme olarak yapılacaktır.
    * Her veriye bir deleted alanı ekleyerek bu alanı true yaparak silme işlemi gerçekleştirilecektir.
    * @param documentPath - deleted oiarak işaretlenecek dökümanın yolunu ifade eder.
-   * @param transaction  - Firestore transaction nesnesi
+   * @param transaction - Firestore transaction nesnesi
+   * @param hardDelete - Belgenin fiziksel olarak kaldirilip kaldirilmayacagini belirtir.  
    * @example
    * const documentPath: DocumentPath = {
         rootPath: "users",
@@ -102,7 +103,11 @@ interface FireStoreDataManager extends DataManager {
 
       await db.remove(documentPath);
    * */
-  remove(documentPath: DocumentPath, transaction?: Transaction): Promise<void>;
+  remove(
+    documentPath: DocumentPath,
+    transaction?: Transaction,
+    hardDelete?: boolean
+  ): Promise<void>;
 
   /**
    * Firestore'da transaction kullanarak veritabanı işlemlerini yürütür.

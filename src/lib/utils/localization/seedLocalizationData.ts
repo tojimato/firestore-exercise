@@ -7,31 +7,22 @@ import createFirestoreDataManager from "../firestore/createFirestoreDataManager"
 const dataManager = createFirestoreDataManager(firestore);
 
 export async function seedLocalizationData() {
-  for (const [language, data] of Object.entries(languageData)) {
-    const collectionPath = {
-      rootPath: FirestoreCollections.Languages,
-      segments: [language],
-    };
-    const pageRequest = {
-      pageSize: 0, 
-    };
+  await dataManager.transaction(async (transaction) => {
+    for (const [language, data] of Object.entries(languageData)) {
+      const collectionPath = {
+        rootPath: FirestoreCollections.Languages,
+        segments: [language],
+      };
 
-    const response = await dataManager.list<Language>(
-      { rootPath: collectionPath.rootPath },
-      pageRequest
-    );
-
-    const exists = response.items.some(x=> x.code === language);
-
-    if (!exists) {
       console.log(`Seeding data for language: ${language}`);
       await dataManager.set<Language>(
         collectionPath,
         {
           ...data,
         },
+        transaction
       );
-
+      
       for (const [key, value] of Object.entries(data.resources)) {
         await dataManager.set<Resource>(
           {
@@ -39,10 +30,10 @@ export async function seedLocalizationData() {
             segments: [language, FirestoreCollections.Resources, key],
           },
           { value },
-          undefined,
+          transaction,
           false
         );
       }
     }
-  }
+  });
 }
