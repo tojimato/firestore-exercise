@@ -16,4 +16,5 @@ export const turkishResources: Resource = {
   TXT_USER_EMPTY_LIST_INFO:"There is no user, sorry.",
   TXT_INDIVIDUAL_USER:"Individual User",
   TXT_INDIVIDUAL_USER_DESC:"Press get data button to fetch user.",
+  TXT_DO_LOGIN_BUTTON:"Giriş Yap",
 };

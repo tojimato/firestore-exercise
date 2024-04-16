@@ -14,15 +14,28 @@ import { Message, User } from "./lib/models";
 import { useLocalize } from "./lib/hooks/useLocalize";
 import { seedLocalizationData } from "./lib/utils/localization/seedLocalizationData";
 import { useAppContext } from "./lib/providers/AppProvider";
+import useFetchUserData from "./lib/hooks/useFetchUserData";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [user, setUser] = useState<User>();
-  const [{ language: selectedLanguage, setLanguage }] = useAppContext();
+  const {currentUser, language, setTheme, theme, setLanguage, setCurrentUser } =
+    useAppContext();
+
+  const {} = useFetchUserData();
 
   const db = createFirestoreDataManager(firestore);
+  console.log(language, theme, currentUser);
 
-  const { resources, error, isFetching } = useLocalize(selectedLanguage);
+  const {
+    data: loggedInUser,
+    error: isUserError,
+    isFetching: isUserFetching,
+  } = useFetchUserData();
+
+  console.log(loggedInUser);
+
+  const { resources, error, isFetching } = useLocalize(language);
 
   if (isFetching) return <p>Loading...</p>;
   if (error) return <p>An error has occurred: {error.message}</p>;
@@ -236,22 +249,34 @@ function App() {
     setUser(user);
   };
 
-  const changeLanguage = async () => {
-    setLanguage(selectedLanguage == "en" ? "tr" : "en");
-    console.log(selectedLanguage);
-  };
-
-  const changeTheme = async () => {
-    await seedLocalizationData();
+  const doLogin = async () => {
+    setCurrentUser({
+      first: "tojimato",
+      last: "tojimato",
+      born: 1993,
+      additional: {
+        email: "",
+        phone: "",
+      },
+    });
   };
 
   const seedLanguage = async () => {
     await seedLocalizationData();
   };
 
+  const changeLanguage = async () => {
+    setLanguage(language == "en" ? "tr" : "en");
+  };
+
+  const changeTheme = async () => {
+    setTheme(theme == "dark" ? "light" : "dark");
+  };
+
   return (
     <div className='App'>
       <header className='App-header'>
+        <button onClick={doLogin}>{resources.TXT_DO_LOGIN_BUTTON}</button>
         <button onClick={seedLanguage}>
           {resources.TXT_SEED_LANGUAGE_BUTTON}
         </button>

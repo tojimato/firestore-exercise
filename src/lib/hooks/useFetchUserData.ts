@@ -7,7 +7,7 @@ import { User } from "../models/User";
 interface FetchUserDataResponse extends User {}
 
 function useFetchUserData() {
-  const [{ currentUser }, setState] = useAppContext();
+  const { currentUser, setCurrentUser } = useAppContext();
 
   const { data, error, isFetching } = useQuery<FetchUserDataResponse, Error>({
     queryKey: ["user", currentUser?.id],
@@ -15,15 +15,11 @@ function useFetchUserData() {
     staleTime: Infinity,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    enabled: !!currentUser?.id,
   });
 
   useEffect(() => {
     if (data) {
-      // setState(state => ({
-      //     ...state,
-      //     currentUser: { ...state.currentUser, ...data },
-      // }));
+      setCurrentUser(data);
     }
   }, [data]); // bağımlılık listesine sadece data ekliyoruz
 
@@ -45,6 +41,8 @@ async function fetchUserData(userId: string): Promise<FetchUserDataResponse> {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
+
+    console.log(response.json());
 
     return response.json() as Promise<FetchUserDataResponse>;
   } catch (error) {
